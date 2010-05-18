@@ -18,19 +18,25 @@ function ClicklogView(editor, textbox) {
 	this.log = new Log("ClicklogView");
 	this.textbox = textbox;
 	this.editor = editor;
+    this.sizeClickLog = 0;
 }
 ClicklogView.prototype = {
     scrollToRow: function(index) {
 		// TODO
 	},
 	rowInserted: function(rowIndex) {
-		this.updateView();
+        this.log.debug("updateView: testCase=" + this.testCase);
+        var scrollTop = this.textbox.inputField.scrollTop;
+        var cmd = this.testCase.commands[rowIndex];
+        if(/clickLog[a-zA-Z]*\s*/.test(cmd["command"])){
+            this.textbox.value=cmd["target"]+"\n"+this.textbox.value;
+            this.textbox.inputField.scrollTop = scrollTop;
+        }
+        
 	},
 	rowUpdated: function(index) {
-		this.updateView();
 	},
 	refresh: function() {
-		this.updateView();
 	},
 	// synchronize model from view
 	syncModel: function(force) {
@@ -43,15 +49,5 @@ ClicklogView.prototype = {
 	}
 }
 ClicklogView.prototype.updateView = function() {
-    this.log.debug("updateView: testCase=" + this.testCase);
-    this.textbox.value = "";
-	var scrollTop = this.textbox.inputField.scrollTop;
-    for(var idx = 0; idx<this.testCase.commands.length; ++idx){
-        var cmd = this.testCase.commands[idx];
-        if(/clickLog[a-zA-Z]*\s*/.test(cmd["command"]))
-            this.textbox.value+=cmd["target"]+"\n";
-    }
-    this.textbox.value
-	this.textbox.inputField.scrollTop = scrollTop;
 	//log.debug("source=" + getSource());
 }
