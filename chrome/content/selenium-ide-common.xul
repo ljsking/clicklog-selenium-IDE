@@ -59,6 +59,7 @@ limitations under the License.
   <script type="application/x-javascript" src="chrome://selenium-ide/content/testSuite.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/treeView.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/sourceView.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/clicklogView.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/suiteTreeView.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/testSuiteProgress.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/debugger.js"/>

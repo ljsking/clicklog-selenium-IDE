@@ -93,6 +93,7 @@ function Editor(window) {
 	this.selectDefaultReference();
 	this.treeView = new TreeView(this, document, document.getElementById("commands"));
 	this.sourceView = new SourceView(this, document.getElementById("source"));
+	this.clicklogView = new ClicklogView(this, document.getElementById("clicklog"));
     this.suiteTreeView = new SuiteTreeView(this, document.getElementById("suiteTree"));
     this.testSuiteProgress = new TestSuiteProgress("suiteProgress");
 	//this.toggleView(this.treeView);
@@ -356,6 +357,8 @@ Editor.prototype.tabSelected = function(id) {
 			this.toggleView(this.sourceView);
 		} else if (id == 'editorTab') {
 			this.toggleView(this.treeView);
+		} else if (id == 'clicklogTab') {
+			this.toggleView(this.clicklogView);
 		}
 	}
 }

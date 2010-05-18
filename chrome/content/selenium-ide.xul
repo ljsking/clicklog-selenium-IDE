@@ -95,8 +95,9 @@ limitations under the License.
       </splitter>
       <tabbox flex="3" height="300" width="250">
       <tabs orient="horizontal" onselect="if (window.editor) { window.editor.tabSelected(selectedItem.id) }" id="viewTabs">
-	<tab id="editorTab" label="&tableTab.label;" />
-	<tab id="sourceTab" label="&sourceTab.label;" />
+        <tab id="editorTab" label="&tableTab.label;" />
+        <tab id="sourceTab" label="&sourceTab.label;" />
+        <tab id="clicklogTab" label="ClickLog" />
       </tabs>
       <tabpanels flex="1">
         <stack>
@@ -147,6 +148,9 @@ limitations under the License.
         </stack>
         <tabpanel orient="vertical">
           <textbox id="source" multiline="true" flex="1" onchange="window.editor.sourceView.syncModel()" wrap="off"/>
+        </tabpanel>
+        <tabpanel orient="vertical">
+          <textbox id="clicklog" multiline="true" flex="1" wrap="off"/>
         </tabpanel>
       </tabpanels>
     </tabbox>
