@@ -32,7 +32,7 @@ StandaloneEditor.activityDistributor = Components.classes["@mozilla.org/network/
 StandaloneEditor.prototype.registerRecorder = function() {
     // Define a reference to the interface
     Recorder.registerAll(this);
-    window.httpObserver =
+    StandaloneEditor.httpObserver =
     {
         observeActivity: function(aHttpChannel, aActivityType, aActivitySubtype, aTimestamp, aExtraSizeData, aExtraStringData)
         {
@@ -41,7 +41,6 @@ StandaloneEditor.prototype.registerRecorder = function() {
               case StandaloneEditor.nsIHttpActivityObserver.ACTIVITY_SUBTYPE_REQUEST_HEADER:
                 var stringdata = aExtraStringData.split('\n');
                 var host = /Host: (.+)/.exec(stringdata[1])[1];
-                var tabcounts = 0;
                 if(host == 'cr.naver.com'){
                     var GET = stringdata[0];
                     var clicklog = /&a=(.*?)&/.exec(GET)[1];
@@ -54,23 +53,25 @@ StandaloneEditor.prototype.registerRecorder = function() {
                         var browsers = wnd.getBrowser().browsers;
                         for (var i = 0; i < browsers.length; i++) {
                             recorder = Recorder.get(browsers[i].contentWindow);
-                            tabcounts = tabcounts+1;
+                            
                         }
                     }
-                    if(recorder)
+                    if(recorder){
                         recorder.record("clickLog", clicklog, '');
+                        StandaloneEditor.httpObserver.clicklog = clicklog;
+                    }
                 }
                 break;
             }
           }
         }
     };
-    StandaloneEditor.activityDistributor.addObserver(window.httpObserver);
+    StandaloneEditor.activityDistributor.addObserver(StandaloneEditor.httpObserver);
 }
 
 StandaloneEditor.prototype.deregisterRecorder = function() {
     Recorder.deregisterAll(this);
-    StandaloneEditor.activityDistributor.removeObserver(window.httpObserver);
+    StandaloneEditor.activityDistributor.removeObserver(StandaloneEditor.httpObserver);
 }
 
 SidebarEditor.prototype.isSidebar = function() {

@@ -219,9 +219,9 @@ Selenium.prototype.reset = function() {
 };
 
 Selenium.prototype.doClickLog = function(locator) {
-    if(locator!=Recorder.httpObserver.clickLog)
+    if(locator!=StandaloneEditor.httpObserver.clicklog)
         Assert.fail(this.browserbot.currentWindow.clickLog);
-    Recorder.httpObserver.clickLog = null;
+    StandaloneEditor.httpObserver.clicklog = null;
 }
 
 Selenium.prototype.doClick = function(locator) {
