@@ -36,7 +36,6 @@ Recorder.prototype.getWrappedWindow = function() {
 
 Recorder.prototype.reattachWindowMethods = function() {
     var window = this.getWrappedWindow();
-	//this.log.debug("reattach");
 	if (!this.windowMethods) {
 		this.originalOpen = window.open;
 	}
@@ -103,7 +102,6 @@ Recorder.prototype.registerUnloadListener = function() {
 }
 
 Recorder.prototype.attach = function() {
-	this.log.debug("attaching");
 	this.locatorBuilders = new LocatorBuilders(this.window);
 	this.eventListeners = {};
 	this.reattachWindowMethods();
@@ -137,7 +135,6 @@ Recorder.prototype.attach = function() {
 }
 
 Recorder.prototype.detach = function() {
-	this.log.debug("detaching");
 	this.locatorBuilders.detach();
 	for (eventKey in this.eventListeners) {
 		var eventInfo = this.parseEventKey(eventKey);
@@ -255,40 +252,8 @@ Recorder.decorateEventHandler = function(handlerName, eventName, decorator, opti
    }
 };
 
-// Define a reference to the interface
-Recorder.nsIHttpActivityObserver = Components.interfaces.nsIHttpActivityObserver;
-
-Recorder.httpObserver =
-{
-    observeActivity: function(aHttpChannel, aActivityType, aActivitySubtype, aTimestamp, aExtraSizeData, aExtraStringData)
-    {
-      if (aActivityType == Recorder.nsIHttpActivityObserver.ACTIVITY_TYPE_HTTP_TRANSACTION) {
-        switch(aActivitySubtype) {
-          case Recorder.nsIHttpActivityObserver.ACTIVITY_SUBTYPE_REQUEST_HEADER:
-            var stringdata = aExtraStringData.split('\n');
-            var host = /Host: (.+)/.exec(stringdata[1])[1];
-            if(host == 'cr.naver.com'){
-                var GET = stringdata[0];
-                var clicklog = /&a=(.*?)&/.exec(GET)[1];
-                Recorder.httpObserver.recorder.record("clickLog", clicklog, '');
-                Recorder.httpObserver.recorder.window.clickLog = clicklog;
-                Recorder.httpObserver.clickLog = clicklog;
-            }
-            break;
-        }
-      }
-    }
-};
-    
-Recorder.activityDistributor = Components.classes["@mozilla.org/network/http-activity-distributor;1"]
-    .getService(Components.interfaces.nsIHttpActivityDistributor);
-
 Recorder.register = function(observer, window) {
     this.log.debug("register: window=" + window);
-    if(!Recorder.httpWatch){
-        Recorder.activityDistributor.addObserver(Recorder.httpObserver);
-        Recorder.httpWatch = true;
-    }
 	var recorder = Recorder.get(window);
 	if (!recorder) {
 		recorder = new Recorder(window);
@@ -298,7 +263,6 @@ Recorder.register = function(observer, window) {
             window.wrappedJSObject[Recorder.WINDOW_RECORDER_PROPERTY] = recorder;
         }
 	}
-    Recorder.httpObserver.recorder = recorder;
 	recorder.observers.push(observer);
 	this.log.debug("register: observers.length=" + recorder.observers.length);
 	return recorder;
@@ -306,10 +270,6 @@ Recorder.register = function(observer, window) {
 
 Recorder.deregister = function(observer, window) {
     this.log.debug("deregister: window=" + window);
-    if(Recorder.httpWatch){
-        Recorder.activityDistributor.removeObserver(Recorder.httpObserver);
-        Recorder.httpWatch = false;
-    }
 	var recorder = Recorder.get(window);
 	if (recorder) {
 		recorder.deregister(observer);
